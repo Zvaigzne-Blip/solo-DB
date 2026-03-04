@@ -115,7 +115,12 @@ class Notification(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE, related_name='notifications')
-    user_id = models.UUIDField()
+    user = models.ForeignKey(
+        'auth.User',
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name='notifications',
+    )
     notification_type = models.CharField(max_length=30, choices=NotificationType.choices)
     title = models.CharField(max_length=500)
     body = models.TextField(blank=True)
@@ -138,7 +143,12 @@ class AuditLog(models.Model):
     """Global immutable audit trail for all data mutations."""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE, related_name='audit_logs')
-    user_id = models.UUIDField(null=True, blank=True)
+    user = models.ForeignKey(
+        'auth.User',
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name='audit_logs',
+    )
     action = models.CharField(max_length=100)
     entity_type = models.CharField(max_length=100)
     entity_id = models.UUIDField(null=True, blank=True)

@@ -81,9 +81,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Database — SQLite for local dev, Supabase PostgreSQL for staging/production
-# Set DATABASE_URL in .env to switch:
-#   DATABASE_URL=postgresql://postgres:<password>@db.<project>.supabase.co:5432/postgres
+# Database — SQLite for local dev, PostgreSQL (Render / any provider) in prod
+# Set DATABASE_URL in environment to switch:
+#   DATABASE_URL=postgresql://user:pass@host:5432/dbname
 # ─────────────────────────────────────────────────────────────────────────────
 _db_url = os.environ.get('DATABASE_URL', '')
 
@@ -239,9 +239,3 @@ REST_FRAMEWORK = {
     ],
 }
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Supabase / Storage (populated from .env)
-# ─────────────────────────────────────────────────────────────────────────────
-SUPABASE_URL = os.environ.get('SUPABASE_URL', '')
-SUPABASE_ANON_KEY = os.environ.get('SUPABASE_ANON_KEY', '')
-SUPABASE_SERVICE_ROLE_KEY = os.environ.get('SUPABASE_SERVICE_ROLE_KEY', '')

@@ -10,7 +10,7 @@ django-cors-headers>=4.6,<5.0
 python-dotenv>=1.0,<2.0
 
 # ─── Database ────────────────────────────────────────────────────────────────
-psycopg2-binary>=2.9,<3.0          # PostgreSQL adapter (Supabase)
+psycopg2-binary>=2.9,<3.0          # PostgreSQL adapter
 
 # ─── Smart Inbox / OCR / AI ──────────────────────────────────────────────────
 openai>=1.0,<2.0                   # GPT-4o Vision OCR + classification
@@ -40,9 +40,6 @@ channels-redis>=4.2,<5.0          # Channel layers via Redis
 
 # ─── Encryption (bank details, OAuth tokens at rest) ─────────────────────────
 cryptography>=42.0,<43.0
-
-# ─── Supabase Client ─────────────────────────────────────────────────────────
-supabase>=2.4,<3.0                 # Supabase Python client (storage, auth)
 
 # ─── Production server & static files ───────────────────────────────────────
 gunicorn>=21.2,<22.0               # WSGI server for Cloud Run / production

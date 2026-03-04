@@ -8,11 +8,14 @@ from django.conf import settings
 
 
 class Profile(models.Model):
-    """Extended user profile (1:1 with Supabase auth.users).
-    In production: id is set from Supabase auth.users.id (no auto-default).
-    In local dev: auto-generated UUID so admin creates work out of the box.
-    """
+    """Extended user profile — 1:1 with Django's built-in User."""
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='profile',
+        null=True, blank=True,
+    )
     full_name = models.CharField(max_length=255, blank=True)
     display_name = models.CharField(max_length=100, blank=True)
     avatar_url = models.URLField(blank=True)
@@ -34,7 +37,12 @@ class Workspace(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     slug = models.SlugField(max_length=100, unique=True)
-    owner_id = models.UUIDField()  # references auth.users
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name='owned_workspaces',
+    )
     base_currency = models.CharField(max_length=3, default='USD')
     timezone = models.CharField(max_length=50, default='UTC')
     logo_url = models.URLField(blank=True)
@@ -99,11 +107,21 @@ class WorkspaceMember(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE, related_name='members')
-    user_id = models.UUIDField(null=True, blank=True)  # null until invite accepted
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name='workspace_memberships',
+    )
     email = models.EmailField()
     role = models.CharField(max_length=20, choices=Role.choices, default=Role.MEMBER)
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING)
-    invited_by = models.UUIDField(null=True, blank=True)
+    invited_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True, blank=True,
+        related_name='sent_invitations',
+    )
     invited_at = models.DateTimeField(auto_now_add=True)
     joined_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

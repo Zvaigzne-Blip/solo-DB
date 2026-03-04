@@ -1,0 +1,31 @@
+# fly.toml — Fly.io deployment config for SoloHub Django app
+app = "solohub-app"
+primary_region = "ams"  # Amsterdam — closest to Supabase eu-west
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "8080"
+  DEBUG = "False"
+  ALLOWED_HOSTS = "solohub-app.fly.dev"
+  SUPABASE_URL = "https://rsuqwzuazrmnvvdcilrf.supabase.co"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [[http_service.checks]]
+    grace_period = "60s"
+    interval = "15s"
+    method = "GET"
+    path = "/"
+    timeout = "10s"
+
+[[vm]]
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1
