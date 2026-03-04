@@ -10,27 +10,27 @@
     "redirects": [
       {
         "source": "/admin",
-        "destination": "https://solohub-1082894585721.europe-west1.run.app/admin/",
+        "destination": "https://solohub-tgb6xr7dcq-ew.a.run.app/admin/",
         "type": 301
       },
       {
         "source": "/admin/**",
-        "destination": "https://solohub-1082894585721.europe-west1.run.app/admin/:splat",
+        "destination": "https://solohub-tgb6xr7dcq-ew.a.run.app/admin/:splat",
         "type": 301
       },
       {
         "source": "/api",
-        "destination": "https://solohub-1082894585721.europe-west1.run.app/api/",
+        "destination": "https://solohub-tgb6xr7dcq-ew.a.run.app/api/",
         "type": 301
       },
       {
         "source": "/api/**",
-        "destination": "https://solohub-1082894585721.europe-west1.run.app/api/:splat",
+        "destination": "https://solohub-tgb6xr7dcq-ew.a.run.app/api/:splat",
         "type": 301
       },
       {
         "source": "/",
-        "destination": "https://solohub-1082894585721.europe-west1.run.app/",
+        "destination": "https://solohub-tgb6xr7dcq-ew.a.run.app/",
         "type": 301
       }
     ],

@@ -188,6 +188,7 @@ if not DEBUG:
         'https://*.web.app',
         'https://*.firebaseapp.com',
         'https://*.run.app',
+        'https://solohub-tgb6xr7dcq-ew.a.run.app',
     ] + _csrf_extra
 
 # ─────────────────────────────────────────────────────────────────────────────
