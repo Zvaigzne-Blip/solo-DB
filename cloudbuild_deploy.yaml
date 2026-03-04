@@ -56,7 +56,8 @@ steps:
       - -c
       - |
         npm install -g firebase-tools@13.10.0
-        firebase deploy --only hosting --project sayyes-485207 --non-interactive --token $$FIREBASE_TOKEN --debug 2>&1 | tail -60
+        CLEAN_TOKEN=$(printf '%s' "$$FIREBASE_TOKEN" | tr -d '\r\n ')
+        firebase deploy --only hosting --project sayyes-485207 --non-interactive --token "$CLEAN_TOKEN"
     secretEnv: [FIREBASE_TOKEN]
 
 images:
