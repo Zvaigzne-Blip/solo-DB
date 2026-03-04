@@ -32,7 +32,8 @@ staticfiles/
 .DS_Store
 Thumbs.db
 
-# IDE
-.vscode/
-.idea/
-*.swp
+# Firebase local cache
+.firebase/
+
+# Fly.io — keep fly.toml (project config) but ignore local state
+.fly/
