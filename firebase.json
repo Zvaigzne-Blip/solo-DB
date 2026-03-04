@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "sayyes-485207",
     "public": "staticfiles",
     "ignore": [
       "firebase.json",

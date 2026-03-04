@@ -39,9 +39,9 @@ steps:
       - --image=europe-west1-docker.pkg.dev/sayyes-485207/cloud-run-source-deploy/solohub:latest
       - --region=europe-west1
       - --platform=managed
-      - --allow-unauthenticated
+      - --no-allow-unauthenticated
       - --set-secrets=DJANGO_SECRET_KEY=solohub-secret-key:latest,DATABASE_URL=solohub-db-url:latest
-      - --set-env-vars=DEBUG=False
+      - --set-env-vars=DEBUG=False,SUPABASE_URL=https://rsuqwzuazrmnvvdcilrf.supabase.co
       - --memory=512Mi
       - --cpu=1
       - --project=sayyes-485207

@@ -72,9 +72,9 @@ steps:
       - --image=${_REGISTRY}/app:${COMMIT_SHA}
       - --region=${_REGION}
       - --platform=managed
-      - --allow-unauthenticated
+      - --no-allow-unauthenticated
       - --set-secrets=DJANGO_SECRET_KEY=solohub-secret-key:latest,DATABASE_URL=solohub-db-url:latest
-      - --set-env-vars=DEBUG=False
+      - --set-env-vars=DEBUG=False,SUPABASE_URL=https://rsuqwzuazrmnvvdcilrf.supabase.co
       - --min-instances=0
       - --max-instances=10
       - --memory=512Mi
