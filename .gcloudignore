@@ -1,0 +1,8 @@
+# .gcloudignore — files excluded from Cloud Build source upload
+# Mirrors .dockerignore; keeps the uploaded archive small.
+#!include:.dockerignore
+
+# Additional exclusions for Cloud Build
+*.md
+database/
+generate_schema_pdf.py

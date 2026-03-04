@@ -1,0 +1,64 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# SoloHub — Python Dependencies
+# Install: pip install -r requirements.txt
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ─── Core Framework ──────────────────────────────────────────────────────────
+Django>=6.0,<7.0
+djangorestframework>=3.15,<4.0
+django-cors-headers>=4.6,<5.0
+python-dotenv>=1.0,<2.0
+
+# ─── Database ────────────────────────────────────────────────────────────────
+psycopg2-binary>=2.9,<3.0          # PostgreSQL adapter (Supabase)
+
+# ─── Smart Inbox / OCR / AI ──────────────────────────────────────────────────
+openai>=1.0,<2.0                   # GPT-4o Vision OCR + classification
+anthropic>=0.25,<1.0               # Claude fallback
+Pillow>=10.0,<11.0                 # image processing for OCR pipeline
+
+# ─── Gmail / Google OAuth ────────────────────────────────────────────────────
+google-auth>=2.29,<3.0
+google-auth-oauthlib>=1.2,<2.0
+google-api-python-client>=2.130,<3.0
+
+# ─── Open Banking ────────────────────────────────────────────────────────────
+plaid-python>=19.0,<20.0           # Plaid AIS/PIS
+
+# ─── Messaging Integrations ──────────────────────────────────────────────────
+requests>=2.32,<3.0                # WhatsApp/Telegram webhook HTTP calls
+python-telegram-bot>=21.0,<22.0   # Telegram Bot API
+
+# ─── Task Queue (Celery) ─────────────────────────────────────────────────────
+celery>=5.3,<6.0                   # Async: OCR, dunning, reconciliation, sync
+django-celery-beat>=2.6,<3.0      # Periodic tasks (scheduled reconciliation)
+redis>=5.0,<6.0                    # Celery broker + result backend
+
+# ─── WebSockets (Accountant Chat) ────────────────────────────────────────────
+channels>=4.1,<5.0                 # Django Channels for real-time chat
+channels-redis>=4.2,<5.0          # Channel layers via Redis
+
+# ─── Encryption (bank details, OAuth tokens at rest) ─────────────────────────
+cryptography>=42.0,<43.0
+
+# ─── Supabase Client ─────────────────────────────────────────────────────────
+supabase>=2.4,<3.0                 # Supabase Python client (storage, auth)
+
+# ─── Production server & static files ───────────────────────────────────────
+gunicorn>=21.2,<22.0               # WSGI server for Cloud Run / production
+whitenoise>=6.6,<7.0               # Serve static files without extra CDN config
+
+# ─── PDF Generation ──────────────────────────────────────────────────────────
+reportlab>=4.0,<5.0                # Schema PDF generation
+
+# ─── Utilities ───────────────────────────────────────────────────────────────
+python-dateutil>=2.9,<3.0
+babel>=2.14,<3.0                   # currency/number formatting
+fuzzywuzzy>=0.18,<1.0              # fuzzy matching for Matcher agent
+python-Levenshtein>=0.25,<1.0     # fuzzywuzzy speedup
+
+# ─── Dev / Testing ───────────────────────────────────────────────────────────
+pytest>=8.2,<9.0
+pytest-django>=4.8,<5.0
+factory-boy>=3.3,<4.0
+coverage>=7.5,<8.0

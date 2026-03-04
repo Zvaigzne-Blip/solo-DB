@@ -1,0 +1,104 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# cloudbuild.yaml — Google Cloud Build CI/CD pipeline
+#
+# Triggered automatically on git push (configure trigger in Cloud Console or CLI):
+#   gcloud builds triggers create github \
+#     --repo-name=<your-repo> --repo-owner=<your-github-org> \
+#     --branch-pattern="^main$" --build-config=cloudbuild.yaml
+#
+# Required substitution variables (set in trigger or --substitutions flag):
+#   _REGION      : e.g.  europe-west1
+#   _SERVICE     : e.g.  solohub
+#   _REGISTRY    : e.g.  europe-west1-docker.pkg.dev/$PROJECT_ID/solohub
+# ─────────────────────────────────────────────────────────────────────────────
+
+substitutions:
+  _REGION: europe-west1
+  _SERVICE: solohub
+  _REGISTRY: europe-west1-docker.pkg.dev/sayyes-485207/solohub
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+steps:
+  # ── Step 1: Build the Docker image ─────────────────────────────────────────
+  - name: "gcr.io/cloud-builders/docker"
+    id: build
+    args:
+      - build
+      - -t
+      - "${_REGISTRY}/app:${COMMIT_SHA}"
+      - -t
+      - "${_REGISTRY}/app:latest"
+      - .
+
+  # ── Step 2: Push to Artifact Registry ──────────────────────────────────────
+  - name: "gcr.io/cloud-builders/docker"
+    id: push
+    waitFor: [build]
+    args:
+      - push
+      - --all-tags
+      - "${_REGISTRY}/app"
+
+  # ── Step 3: Extract fresh staticfiles from the built image ─────────────────
+  # collectstatic already ran inside Docker (see Dockerfile). We copy the
+  # compiled output to /workspace so Firebase Hosting always deploys what was
+  # just built, not whatever is committed in git.
+  - name: "${_REGISTRY}/app:${COMMIT_SHA}"
+    id: extract-static
+    waitFor: [push]
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        mkdir -p /workspace/staticfiles
+        cp -r /app/staticfiles/. /workspace/staticfiles/
+    env:
+      - DJANGO_SECRET_KEY=build-placeholder
+      - DEBUG=False
+
+  # ── Step 4: Deploy to Cloud Run ────────────────────────────────────────────
+  # ALLOWED_HOSTS for .run.app / .web.app / .firebaseapp.com is handled
+  # automatically by settings.py when DEBUG=False — no need to pass it here.
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    id: deploy-cloudrun
+    waitFor: [push]
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - "${_SERVICE}"
+      - --image=${_REGISTRY}/app:${COMMIT_SHA}
+      - --region=${_REGION}
+      - --platform=managed
+      - --allow-unauthenticated
+      - --set-secrets=DJANGO_SECRET_KEY=solohub-secret-key:latest,DATABASE_URL=solohub-db-url:latest
+      - --set-env-vars=DEBUG=False
+      - --min-instances=0
+      - --max-instances=10
+      - --memory=512Mi
+      - --cpu=1
+
+  # ── Step 5: Deploy static files to Firebase Hosting ──────────────────────
+  # Waits for both extract-static (fresh files) and deploy-cloudrun (live
+  # service URL exists) before pushing to Firebase CDN.
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    id: deploy-firebase
+    waitFor: [extract-static, deploy-cloudrun]
+    entrypoint: bash
+    args:
+      - -c
+      - |
+        npm install -g firebase-tools
+        firebase deploy --only hosting --project ${PROJECT_ID} --non-interactive --token $$FIREBASE_TOKEN
+    secretEnv: [FIREBASE_TOKEN]
+
+availableSecrets:
+  secretManager:
+    - versionName: projects/$PROJECT_ID/secrets/firebase-ci-token/versions/latest
+      env: FIREBASE_TOKEN
+
+images:
+  - "${_REGISTRY}/app:${COMMIT_SHA}"
+  - "${_REGISTRY}/app:latest"

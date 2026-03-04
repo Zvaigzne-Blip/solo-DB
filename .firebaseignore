@@ -1,0 +1,18 @@
+# .firebaseignore — controls what is excluded from firebase deploy
+# (same syntax as .gitignore, patterns relative to project root)
+
+# WhiteNoise manifest — server-side only, not needed on the Firebase CDN
+staticfiles/static/staticfiles.json
+
+# Python bytecode
+**/__pycache__/**
+**/*.pyc
+**/*.pyo
+
+# Node modules (should never be here, but just in case)
+**/node_modules/**
+
+# Local dev / secrets — never deploy
+.env
+.env.*
+*.sqlite3
