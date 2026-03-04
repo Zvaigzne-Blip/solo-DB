@@ -48,7 +48,7 @@ steps:
       - --project=sayyes-485207
 
   # Deploy Firebase Hosting — serves staticfiles via CDN and proxies API to Cloud Run
-  - name: gcr.io/google.com/cloudsdktool/cloud-sdk
+  - name: node:18
     id: deploy-firebase
     waitFor: [extract-static, deploy]
     entrypoint: bash

@@ -204,6 +204,7 @@ if not DEBUG:
         'https://*.firebaseapp.com',
         'https://*.run.app',
         'https://solohub-tgb6xr7dcq-ew.a.run.app',
+        'https://solohub-1082894585721.europe-west1.run.app',
         'https://*.fly.dev',
     ] + _render_origin + _csrf_extra
 
