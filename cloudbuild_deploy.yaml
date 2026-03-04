@@ -40,6 +40,7 @@ steps:
       - --region=europe-west1
       - --platform=managed
       - --no-allow-unauthenticated
+      - --service-account=1082894585721-compute@developer.gserviceaccount.com
       - --set-secrets=DJANGO_SECRET_KEY=solohub-secret-key:latest,DATABASE_URL=solohub-db-url:latest
       - --set-env-vars=DEBUG=False
       - --memory=512Mi
