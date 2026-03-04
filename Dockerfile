@@ -32,7 +32,9 @@ RUN python manage.py collectstatic --noinput
 # Cloud Run injects $PORT (default 8080); gunicorn binds to it
 EXPOSE 8080
 
-CMD exec gunicorn \
+# Run migrations then start gunicorn
+CMD python manage.py migrate --noinput && \
+    exec gunicorn \
     --bind :${PORT:-8080} \
     --workers 2 \
     --threads 4 \
