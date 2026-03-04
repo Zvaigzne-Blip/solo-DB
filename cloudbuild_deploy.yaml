@@ -41,7 +41,7 @@ steps:
       - --platform=managed
       - --no-allow-unauthenticated
       - --set-secrets=DJANGO_SECRET_KEY=solohub-secret-key:latest,DATABASE_URL=solohub-db-url:latest
-      - --set-env-vars=DEBUG=False,SUPABASE_URL=https://rsuqwzuazrmnvvdcilrf.supabase.co
+      - --set-env-vars=DEBUG=False
       - --memory=512Mi
       - --cpu=1
       - --project=sayyes-485207
