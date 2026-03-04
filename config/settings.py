@@ -166,9 +166,23 @@ STORAGES = {
 # ─────────────────────────────────────────────────────────────────────────────
 # Security headers — enabled in production (DEBUG=False)
 # ─────────────────────────────────────────────────────────────────────────────
+
+# Fly.io injects FLY_APP_NAME; Render injects RENDER_EXTERNAL_HOSTNAME.
+# Both terminate TLS at the edge — SECURE_SSL_REDIRECT must stay False
+# (internal health checks hit plain HTTP).
+_ON_FLY    = bool(os.environ.get('FLY_APP_NAME'))
+_ON_RENDER = bool(os.environ.get('RENDER_EXTERNAL_HOSTNAME'))
+_EDGE_HOST = os.environ.get('RENDER_EXTERNAL_HOSTNAME', '')
+
 if not DEBUG:
+    if _ON_FLY:
+        ALLOWED_HOSTS += ['.fly.dev']
+    if _ON_RENDER and _EDGE_HOST:
+        ALLOWED_HOSTS += [_EDGE_HOST, '.onrender.com']
+
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    SECURE_SSL_REDIRECT = True
+    # Edge platforms handle HTTP→HTTPS; internal redirect breaks health checks.
+    SECURE_SSL_REDIRECT = not (_ON_FLY or _ON_RENDER)
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_HSTS_SECONDS = 31536000
@@ -184,12 +198,14 @@ if not DEBUG:
         for o in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',')
         if o.strip()
     ]
+    _render_origin = ([f'https://{_EDGE_HOST}'] if _EDGE_HOST else []) + ['https://*.onrender.com']
     CSRF_TRUSTED_ORIGINS = [
         'https://*.web.app',
         'https://*.firebaseapp.com',
         'https://*.run.app',
         'https://solohub-tgb6xr7dcq-ew.a.run.app',
-    ] + _csrf_extra
+        'https://*.fly.dev',
+    ] + _render_origin + _csrf_extra
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Default primary key field type
